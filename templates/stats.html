@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+    <link href="static/styles/bootstrap.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+
+
+	<style>
+
+		.container .jumbotron {
+			padding-left: 30px;
+			padding-top: 30px;
+			margin-top: 30px;
+
+		}
+
+
+		#firstname {
+			font-size: 30px;
+
+		}
+
+		#lastname {
+			font-size: 36px;
+		}
+
+
+		 #inputForm {
+		 	margin-top: 40px;
+
+		}
+
+		 #buttonID {
+		 	margin-top: :10px;
+		 	padding-top: 10px;
+		}
+
+
+	</style>
+
+
+</head>
+
+<body>
+
+<div class ="container">
+	<div class="jumbotron">
+
+		<div class="row">
+
+			<div class="col-md-2" id="firstname"></div>
+			<div class="col-md-2" id="firstname">87%</div>
+			<div class="col-md-2" id="firstname">sdfsdf%</div>
+
+
+
+		</div>
+
+		<div class="row">
+
+			<div class="col-md-2" id="region"></div>
+
+		</div>	
+
+		<div class="row">
+
+			<div class="col-md-2" id="club"></div>
+		
+		</div>
+
+	</div>
+		
+</div>
+
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 text-center">
+			<canvas id="myChart2"></canvas>
+
+				Number of ranking points vs time
+
+		</div>
+
+
+ 		<div class="col-md-6 text-center">
+
+			<canvas id="myChart"></canvas>
+			Wins: {{wins}} Losses: {{losses}}
+		</div>
+	
+	</div>
+</div>
+</div>
+
+<div class="col-md-4 col-md-offset-4" id="inputForm">
+    <form action="testFormInput" method="POST" role="form">
+        <div class="form-group">
+            <label for="inputlg"></label>
+
+            	 <input class="form-control input-lg" id="inputlg" type="text" placeholder="Fascinating stuff. Search for someone else?" name="playerName">
+            
+            	 <div id="buttonID">
+            		 <button type="submit" class="btn btn-default col-md-offset-5">Search</button>
+            	 </div>
+
+         </div>
+    </form>
+
+</div>
+
+
+
+<script>
+
+	var ctx = document.getElementById("myChart").getContext('2d');
+	var myChart = new Chart(ctx, {
+	  type: 'pie',
+	  data: {
+	    labels: ["Win", "Loss"],
+	    datasets: [{
+	      backgroundColor: [
+	        "#2ecc71",
+	        "#3498db",
+	      ],
+	      data: [{{wins}}, {{losses}}]
+	    }]
+	  }
+	});
+
+	var ctx2 = document.getElementById('myChart2').getContext('2d');
+	var xPoints = new Array({{rankhistory}}.length-1);
+
+
+	var myChart2 = new Chart(ctx2, {
+	  type: 'line',
+	  data: {
+	    labels: xPoints,
+	    datasets: [{
+	      label: 'Rank',
+	      data: {{rankhistory}},
+	      backgroundColor: "rgba(153,255,51,0.4)"
+	    }]
+	  }
+	});
+
+
+
+	document.getElementById('firstname').innerHTML='{{name}}';
+		
+	document.getElementById('region').innerHTML='Region: {{playerVital[1]}}'
+	document.getElementById('club').innerHTML='Club: {{playerVital[2]}}'
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+</body>

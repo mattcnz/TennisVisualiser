@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Tennis Graphs NZ</title>
+
+        <!-- Bootstrap Core CSS -->
+    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
+    <link href="static/styles/bootstrap.css" rel="stylesheet">
+
+    <style>
+
+        body {
+            background-repeat:no-repeat;
+            background: #1FA2FF;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #A6FFCB, #12D8FA, #1FA2FF);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #A6FFCB, #12D8FA, #1FA2FF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        #inputForm{
+                position: relative;
+                   
+        }
+
+        #buttonID {
+            padding-top: 10px;
+        }
+
+        h1{
+            text-align: center;
+
+        }
+
+        .jumbotron{
+
+            background-color: transparent;
+            margin-bottom: 0px;
+
+        }
+        #description{
+                        text-align: center;
+
+        }
+
+        img {
+          display: block;
+          max-width:300px;
+          max-height:250px;
+          width: auto;
+          height: auto;
+          margin: 0 auto;
+          padding-top: 10px;
+}
+
+
+    </style>
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="jumbotron">
+
+        <h1>Tennis Graphs NZ</h1>
+
+        <p id="description">This tool lets you see some moderately interesting statistics about players in the <a href="http://tennis.org.nz/GradingList.asp">NZ Tennis Gradinglist.</a></p>
+
+
+        <img src="/static/tennis-racket-and-ball.svg" alt="">
+
+
+
+
+
+    </div>
+</div> 
+
+
+<div class="col-md-4 col-md-offset-4" id="inputForm">
+    <form action="testFormInput" method="POST" role="form">
+        <div class="form-group">
+            <label for="inputlg"></label>
+
+             <input class="form-control input-lg" id="inputlg" type="text" placeholder="Search for a player" name="playerName">
+            
+            <div id="buttonID">
+             <button type="submit" class="btn btn-default col-md-offset-5">Search</button>
+            </div>
+
+
+            <!-- Single button -->
+
+
+         </div>
+    </form>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    
+
+
+
+
+</body>
+
+</html>

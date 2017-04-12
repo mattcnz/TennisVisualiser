@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+	<style>
+
+
+
+	</style>
+</head>
+
+<body>
+<svg class="day_chart"></svg>
+    						
+	
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<ul class="items">
+	<li>This is a list</li>
+	<li>This is a list</li>
+	<li>This is a list</li>
+</ul>
+
+<script>
+
+	var dat = [43,23,44];
+	d3.selectAll('.items li')
+	.data(dat)
+	.text(function(d){
+		return 'This is item' + d;
+	})
+</script>
+
+d3.selectall
+
+
+
+</body>
