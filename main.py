@@ -8,7 +8,7 @@ from flask import jsonify
 
 import requests
 
-def searchPlayer(name):
+def searchPlayer(name, sex):
     """Takes a string and searches for a player of that name.
     """
 
@@ -28,6 +28,8 @@ def searchPlayer(name):
     "GradingListIsSubmitted":"No",
     }
 
+    payload['fSex'] = sex
+
     #Get the surname (NZTennis uses this to search, no firstname)
     surname = name.split()[1]
     firstname = name.split()[0]
@@ -44,44 +46,31 @@ def searchPlayer(name):
     #Search through the list of names with that surname and return the playerCode for that firstname,lastname combo.
     namesList = soup.find_all("a")[18:-3]
     namesList = namesList[1:]
-
     for name in namesList:
         i = name.text.split(',')
         if firstname.upper() in i[1].upper():
 
             playerCode = str(name).split('pID=')
-            playerCode =  playerCode[1][:-49]
-            playerCode =re.sub("[^0-9]", "", playerCode)
+            pc = "".join(_ for _ in playerCode[1] if _ in ".1234567890")
+            pc = pc[:-1]
+            #playerCode =  playerCode[1][:-49]
+            #playerCode =re.sub("[^0-9]", "", playerCode)
 
-    return int(playerCode)
-
-
-
-    #repeat for next pages of results
+    return int(pc)
 
 
-
-#Used for getting data abuot a player from their ID
 def getPlayerData(id):
+    """Takes the ID code from getPlayerID and get's info about their games etc"""
 
     s = requests.session()
     r = s.get("http://tennis.org.nz/ResultsHistoryList.asp?pID="+str(id)+"&gtID=2&CP=GradingList")
-
-
     r = s.get("http://tennis.org.nz/ResultsHistoryListPrint.asp")
 
     soup = BeautifulSoup(r.content, 'html.parser')
-    count=0
-    # for i in soup.find_all('td', class_="small"):
-    #     print i.text
-    #     count+=1
-    #     print count
 
     soup = soup.find_all('tr')
 
-    userdict = {}
-    dict2 = {1: 'hello'}
-    userdict[0] = dict2
+    #Parses player data from html
     player_data = []
 
     for i in soup[:]:
@@ -91,23 +80,24 @@ def getPlayerData(id):
         player_data.append(toadd)
     s.close()
 
-    #get vital info
+    #Get vital info - Player Code, Region, Club and Rank
 
     playerInfo = unicodedata.normalize('NFKD', player_data[0][0]).encode('ascii','ignore').split()
-
+    print playerInfo
     playerCode = playerInfo[2][1:].replace(',', '')
     playerRegion = playerInfo[3].replace(',', '')
     playerClub = playerInfo[4].replace(',', '')
     playerCurRank = playerInfo[13]
-
     player_data = player_data[4:]
 
     playerVital = [playerCode, playerRegion, playerClub, playerCurRank]
 
 
-
+    #player_data is a list. This add's everything to a nice dictionary, mydict.
+    #Each entry in the dict has date, round, rank etc.
     mydict = {}
     count= 0
+
     for entry in player_data:
 
         if len(entry)==8:
@@ -123,10 +113,17 @@ def getPlayerData(id):
 
             mydict[count]=toadd
             count+=1
-    return json.dumps(mydict), playerVital
+
+    playerDataFinal = json.dumps(mydict)
+    return playerDataFinal, playerVital
+
 
 def getWinLoss(playerData):
+    """Get's the W-L record for the player. Takes the playerDataFinal dict object.
+       Counts the wins and losses, and returns both integers.
+    """
     data = json.loads(playerData)
+
     wLDict = { "win" : 0,
                "lost": 0}
 
@@ -146,21 +143,34 @@ def getWinLoss(playerData):
 
 
 def getWinLossStreaks(playerData):
+    """Get's the players best win streak and worst losing streak"""
+
+
 
     playerDataDict = json.loads(playerData)
+
+    #Check if they've ever lost/won
+
+    for i in range(1,len(playerDataDict)):
+        if str('Won') in str(playerDataDict[str(i)]['result']):
+            hasWon=True
+        if str('Lost') in str(playerDataDict[str(i)]['result']):
+            hasLost=True
+
 
     count=0
     highest=0
     for i in range(1,len(playerDataDict)):
         if str('Won') in str(playerDataDict[str(i)]['result']):
             count+=1
+            print count
         else:
             if count > highest: highest = count
             count=0
 
     count=0
     loss_streak=0
-    #Count loss stream
+    #Count loss streak
     for i in range(1,len(playerDataDict)):
         if str('Lost') in str(playerDataDict[str(i)]['result']):
             count+=1
@@ -169,9 +179,9 @@ def getWinLossStreaks(playerData):
             count=0
     return highest, loss_streak
 
+
 def hasNumbers(stringToCheck):
     return any(char.isdigit() for char in stringToCheck)
-
 
 def getGradeVsTime(playerData):
     playerDataDict = json.loads(playerData);
@@ -191,38 +201,18 @@ def getGradeVsTime(playerData):
 
 
         if '-' not in rank and hasNumbers(rank):
-            # print int((rank)[-6:-2])
+
 
             rankHistory.append(int((rank)[-6:-2]))
             dateHistory.append(str(playerDataDict[str(i)]['date']))
 
-        # else:
-        #     result = re.search(' (.*)', rank)
-        #     if result != None:
-        #         rankHistory.append(int(result.group((1))))
-
-
+    dateHistoryFinal = []
+    for t in dateHistory:
+        dateHistoryFinal.append(t[3:-2])
     rankHistory.reverse()
-    # print dateHistory
-    # print rankHistory
-    return rankHistory, dateHistory
+    dateHistoryFinal.reverse()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return rankHistory, dateHistoryFinal
 
 
 

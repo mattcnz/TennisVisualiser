@@ -9,20 +9,6 @@ import traceback
 app = Flask(__name__)
 
 
-#Returns Results - Test Function
-@app.route('/results/<ID>')
-def test(ID):
-    s = requests.session()
-    r = s.get("http://tennis.org.nz/ResultsHistoryList.asp?pID=" + ID +"&gtID=2&CP=GradingList")
-
-    r = s.get("http://tennis.org.nz/ResultsHistoryListPrint.asp")
-    return r.content
-
-#Counter - Test
-@app.route('/countme/<input_str>')
-def count_me(input_str):
-    return input_str
-
 #Handles Errors
 @app.errorhandler(500)
 def internal_error(exception):
@@ -35,51 +21,43 @@ def internal_error(exception):
 
 #-----------------------------------------------------------------#
 
-@app.route('/work')
-def main(jsondata=None):
-    data = getWinLoss(14056)
-
-    return render_template('d3test.html',jsondata=data)
-
-@app.route('/workextend/<ID>')
-def workextend(ID, content=None):
-
-    data = getPlayerData(ID)
-    return render_template('index2.html', content=data)
-
-@app.route('/returnPlayerWinLoss/<ID>')
-def winLoss(ID, graphData=None):
-    graphData=getWinLoss(ID)
-    return render_template('extend.html', graphData=graphData)
-
+@app.route('/')
+def home():
+    return render_template("home.html")
 
 @app.route('/lander')
 def lander():
     return render_template('lander.html')
 
-@app.route('/testFormInput', methods=['POST'])
-def testFormInput():
+@app.route('/stats', methods=['POST'])
+def stats():
 
     name =  request.form['playerName']
+    sex =  request.form['optradio']
+
     try:
-        id = searchPlayer(name)
+        id = searchPlayer(name, sex)
     except:
-        return "no player with that name"
+        return "No Player With That Name"
 
 
     playerData, playerVital = getPlayerData(id)
     winStreak, lossStreak = getWinLossStreaks(playerData)
+    print winStreak, lossStreak
     wins, losses = getWinLoss(playerData)
 
-    winPercentage = float(winStreak) / (winStreak+lossStreak)
-    lossPercentage = 1- winPercentage
+    if lossStreak == 0 and winStreak != 0:
+        winPercentage = 1
+        lossPercentage = 0
+    else:
+        winPercentage = float(winStreak) / (winStreak+lossStreak)
+        winPercentage = int(winPercentage*100)
+        lossPercentage = 1- winPercentage
 
     rankhistory, dateHistory = getGradeVsTime(playerData)
 
     return render_template('stats.html', rankhistory=rankhistory, dateHistory=dateHistory, wins=wins, losses=losses, winStreak=winStreak, lossStreak=lossStreak, id=id, name=name, winPercentage=winPercentage, lossPercentage=lossPercentage,playerVital=playerVital
                            )
-
-
 
 if __name__ == '__main__':
   app.run()

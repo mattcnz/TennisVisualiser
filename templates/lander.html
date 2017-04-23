@@ -3,6 +3,16 @@
 
 <head>
 
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-97821637-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
@@ -14,6 +24,8 @@
         <!-- Bootstrap Core CSS -->
     <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
     <link href="static/styles/bootstrap.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
 
     <style>
 
@@ -54,6 +66,12 @@
 
         }
 
+        #radioButtons{
+
+            text-align: center;
+
+        }
+
         img {
           display: block;
           max-width:300px;
@@ -63,6 +81,8 @@
           margin: 0 auto;
           padding-top: 10px;
 }
+
+
 
 
     </style>
@@ -92,15 +112,32 @@
 
 
 <div class="col-md-4 col-md-offset-4" id="inputForm">
-    <form action="testFormInput" method="POST" role="form">
+    <form action="stats" method="POST" role="form">
         <div class="form-group">
+
+        <div class="row">
             <label for="inputlg"></label>
 
              <input class="form-control input-lg" id="inputlg" type="text" placeholder="Search for a player" name="playerName">
             
-            <div id="buttonID">
-             <button type="submit" class="btn btn-default col-md-offset-5">Search</button>
-            </div>
+
+                <div id="radioButtons">
+                    <div class="radio">
+                      <label><input type="radio" name="optradio" value="M" checked="checked">Male&nbsp;&nbsp;</label>
+                       <label><input type="radio" name="optradio" value="F">Female</label>
+
+                    </div>
+
+                </div>
+
+
+             </div>
+                <div id="buttonID">
+                 <button type="submit" class="btn btn-default col-md-offset-5">Search</button>
+
+
+                </div>
+
 
 
             <!-- Single button -->
